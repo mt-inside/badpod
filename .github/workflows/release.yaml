@@ -18,6 +18,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
+      - name: Get current tag
+        id: get_current_tag
+        run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+
       - name: Make GH release
         id: make_release
         uses: actions/create-release@v1
@@ -39,4 +43,4 @@ jobs:
         uses: docker/build-push-action@v2 # implicity relies on /Dockerfile
         with:
           push: true
-          tags: mtinside/badpod:${{ github.ref }}
+          tags: mtinside/badpod:${{ steps.get_current_tag.outputs.tag }}
