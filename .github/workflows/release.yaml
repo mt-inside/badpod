@@ -1,0 +1,39 @@
+name: Release to Dockerhub
+
+# fixme: running on non-tag pushes, getting confused
+on:
+  push:
+    tags: # all tags. Including lightweight (it's convention to make GH Releases on annotated tags, but it supports both)
+      - '*'
+
+# Note the commits operated on are based from GITHUB_REF, but I think we could just use `git describe` becuase I'm sure the repo is checked out to that point. eg
+#   git for-each-ref --count=1 --sort='-*authordate' --format='%(*refname:short)' 'refs/tags'
+#   git describe --abbrev=0 --tags $(git describe --tags --abbrev=0)^
+
+jobs:
+  make_release:
+    name: Make Release
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Make GH release
+        id: make_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ github.ref }} # Guarenteed to be a tag cause by definion we're on one
+          release_name: Release ${{ github.ref }}
+          prerelease: false
+          draft: true
+
+      - name: Make and push Docker image
+        uses: docker/build-push-action@v1 # implicity relies on /Dockerfile
+        with:
+          registry: docker.pkg.github.com # github packages isn't the most widely used registry, but this avoids docker-hub credentials management
+          repository: ${{ github.repository }}/badpod # docker run docker.pkg.github.com/mt-inside/gh-actions-test/example:vX.X.X
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          tag_with_ref: true
