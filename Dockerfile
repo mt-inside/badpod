@@ -15,7 +15,7 @@ FROM gcr.io/distroless/static-debian10:latest AS run
 ARG PORT=8080
 
 COPY --from=build /go/bin/badpod /
-COPY *tpl /
+COPY data data
 
 EXPOSE $PORT
 ENTRYPOINT ["/badpod"]
