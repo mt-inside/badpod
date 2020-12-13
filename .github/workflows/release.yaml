@@ -29,11 +29,14 @@ jobs:
           prerelease: false
           draft: true
 
-      - name: Make and push Docker image
-        uses: docker/build-push-action@v1 # implicity relies on /Dockerfile
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
-          registry: docker.pkg.github.com # github packages isn't the most widely used registry, but this avoids docker-hub credentials management
-          repository: ${{ github.repository }}/badpod # docker run docker.pkg.github.com/mt-inside/gh-actions-test/example:vX.X.X
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          tag_with_ref: true
+          username: mtinside
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Make and push Docker image
+        uses: docker/build-push-action@v2 # implicity relies on /Dockerfile
+        with:
+	  push: true
+          tags: mtinside/badpod:${{ github.ref }}
