@@ -1,6 +1,5 @@
 name: Release to Dockerhub
 
-# fixme: running on non-tag pushes, getting confused
 on:
   push:
     tags: # all tags. Including lightweight (it's convention to make GH Releases on annotated tags, but it supports both)
@@ -33,7 +32,7 @@ jobs:
           prerelease: false
           draft: true
 
-      - name: Set up Docker Buildx # Can't auto-push without this??
+      - name: Set up Docker Buildx # "Can't auto-push without this" - need the buildx "driver" not the docker one
         uses: docker/setup-buildx-action@v1
 
       - name: Login to DockerHub

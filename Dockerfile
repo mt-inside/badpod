@@ -5,7 +5,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-# including the .git dir
+# including the .git dir, for version stuff to work
 COPY . .
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go install -a -tags netgo -ldflags "-w -extldflags '-static' $(build/ldflags.sh)" cmd/badpod.go
 
