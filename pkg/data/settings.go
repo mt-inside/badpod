@@ -1,8 +1,9 @@
 package data
 
 import (
-	"github.com/docker/go-units"
 	"strconv"
+
+	"github.com/docker/go-units"
 )
 
 type Settings struct {
@@ -17,7 +18,7 @@ type Settings struct {
 func NewSettings() *Settings {
 	return &Settings{
 		delay:     0,
-		bandwidth: 0,
+		bandwidth: 2,
 		errorRate: 0.0,
 		cpuUse:    0.0,
 		liveness:  true,
@@ -67,10 +68,9 @@ func SetLiveness(l bool) {
 	settings.liveness = l
 }
 
-func SetReadiness(r bool)  {
+func SetReadiness(r bool) {
 	settings.readiness = r
 }
-
 
 func GetDelay() int64 {
 	return settings.delay

@@ -36,5 +36,5 @@ func getSessionData() map[string]string {
 
 // For logging
 func RenderSessionData() string {
-	return fmt.Sprintf("session: %s", name)
+	return fmt.Sprintf("session: %s, request: %d", name, reqNo)
 }

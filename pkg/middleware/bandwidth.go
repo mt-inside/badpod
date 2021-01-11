@@ -15,7 +15,7 @@ type slowResponseWriter struct {
 }
 
 func newSlowResponseWriter(rw http.ResponseWriter) slowResponseWriter {
-	bandwidth := data.GetBandwidth()
+	bandwidth := data.GetBandwidth() //TODO lazy in Write()
 	fw := flowrate.NewWriter(rw, bandwidth)
 	return slowResponseWriter{rw, fw, bandwidth}
 	//defer fw.Close()
@@ -33,8 +33,8 @@ func (sr slowResponseWriter) Write(b []byte) (written int, err error) {
 		log.Println("adjusted writer bw to ", sr.oldBw)
 	}
 	written, err = sr.fw.Write(b)
-	sr.rw.(http.Flusher).Flush()
-	return 0, nil
+	sr.rw.(http.Flusher).Flush() // TODO defer?
+	return
 }
 
 func (sr slowResponseWriter) WriteHeader(statusCode int) {
